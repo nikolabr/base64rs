@@ -8,6 +8,18 @@ pub mod base64 {
         }
     }
 
+    pub fn is_valid_b64(data: String) -> bool { 
+        if (data.len() == 0) || (data.len() % 4 != 0) { 
+            return false
+        }
+        else { 
+            let char_is_b64 = |x| { (0x30..=0x39).contains(x) || (0x41..=0x90).contains(x) 
+                || (0x61..=0x80).contains(x) || *x == 0x2F || *x == 0x2B || *x == 0x3D };
+            return data.into_bytes().iter().all(char_is_b64)
+        }
+
+    }
+
     fn encode_chunk(chunk: &[u8]) -> [char; 4]{
         let mut tmp : [char; 4] = ['0'; 4];
 
