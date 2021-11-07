@@ -24,7 +24,6 @@ pub mod base64 {
                 || (0x61..=0x80).contains(x) || *x == 0x2F || *x == 0x2B || *x == 0x3D };
             return data.as_bytes().iter().all(char_is_b64)
         }
-
     }
 
     fn encode_chunk(chunk: &[u8]) -> [char; 4]{
@@ -88,17 +87,21 @@ pub mod base64 {
         res
     }
 
-    pub fn decode(data: &String) -> Vec<u8> {
-        let mut res: Vec<u8> = Vec::new();
-        if is_valid_b64(data) == true {
-            let bytes = data.as_bytes();
-            let chunks = bytes.chunks(4);
+    pub fn decode(data: &String) -> Result<Vec<u8>, String> {
+        match is_valid_b64(data){
+            true => {
+                let mut res: Vec<u8> = Vec::new();
+                let bytes = data.as_bytes();
+                let chunks = bytes.chunks(4);
 
-            for chunk in chunks {
-                res.extend(decode_chunk(chunk)); 
+                for chunk in chunks {
+                    res.extend(decode_chunk(chunk)); 
+                }
+               return Ok(res);
+            },
+            false => {
+                return Err("Input is not Base64!".to_string());
             }
-        }
-
-        res
+        }; 
     }
 }
